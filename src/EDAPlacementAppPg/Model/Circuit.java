@@ -58,8 +58,8 @@ public class Circuit {
     {
         None,
         Wire,
-        Output,
         Input,
+        Output,
         And,
         Or,
         Not
