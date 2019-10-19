@@ -152,7 +152,7 @@ public class Circuit {
             element.x = xPos;
             element.y = yPos;
             xPos += 8;
-            if(xPos >= width)
+            if(xPos >= length)
             {
                 yPos += 8;
             }

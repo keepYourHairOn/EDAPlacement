@@ -1,9 +1,5 @@
 package EDAPlacementAppPg;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-
 import EDAPlacementAppPg.Model.Circuit;
 import EDAPlacementAppPg.Model.MyGraph;
 import EDAPlacementAppPg.Model.Parser;
@@ -11,6 +7,12 @@ import javafx.util.Pair;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 @SpringBootApplication(scanBasePackages = "EDAPlacementAppPg.Model.controller")
 @EnableWebMvc
