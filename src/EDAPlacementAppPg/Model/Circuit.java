@@ -1,5 +1,6 @@
 package EDAPlacementAppPg.Model;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -57,8 +58,8 @@ public class Circuit {
     {
         None,
         Wire,
-        Input,
         Output,
+        Input,
         And,
         Or,
         Not
@@ -67,7 +68,7 @@ public class Circuit {
     public int[][][] ToArray()
     {
         int [][][] result = new int[field.size()][width][length];
-        for(int i = 0; i < result.length;i++)
+        for(int i = 0; i <   result.length;i++)
         {
             for(int j = 0; j < result[0].length;j++)
             {
@@ -205,12 +206,12 @@ public class Circuit {
     {
         int[][] map = layout.CreateMap();
         for(int i = targetElement.x; i < targetElement.x+5;i++) {
-            for (int j = 0; j < targetElement.y + 5; j++)
+            for (int j = targetElement.y; j < targetElement.y + 5; j++)
                 map[j][i] = -2;
         }
 
         for(int i = sourceElement.x; i < sourceElement.x+5;i++) {
-            for (int j = 0; j < sourceElement.y + 5; j++)
+            for (int j = sourceElement.y; j < sourceElement.y + 5; j++)
                 map[j][i] = 0;
         }
         return map;
@@ -218,8 +219,7 @@ public class Circuit {
 
     private boolean DrawWay(Point reachmentPoint, int[][] map, Point initialPoint)
     {
-        map[initialPoint.y][initialPoint.x] = 1;
-        ArrayDeque<Pair<Point,Integer>> points = new ArrayDeque<Pair<Point,Integer>>();
+        Queue<Pair<Point,Integer>> points = new ArrayDeque<>();
         Point P = new Point();
         P.x = initialPoint.x;
         P.y = initialPoint.y;
@@ -230,9 +230,9 @@ public class Circuit {
             Pair<Point,Integer> p = points.poll();
             Point point = p.getKey();
             boolean isAcceptable = true;
-            for(int i = -1; i < 2; i++)
+            for(int i = -1; i < 2 && isAcceptable; i++)
             {
-                for(int j = -1; j < 2; j++)
+                for(int j = -1; j < 2 && isAcceptable; j++)
                 {
                     if(CheckPoint(point,i,j) && map[point.y+j][point.x+i] == -1){
                         map[point.y][point.x] = -3;
@@ -241,16 +241,14 @@ public class Circuit {
                 }
             }
             if(!isAcceptable)continue;
-
-
             int counter = p.getValue();
-
+            map[point.y][point.x] = counter;
 
             for(int i = -1; i < 2; i++)
             {
                 for(int j = -1; j < 2; j++)
                 {
-                    if(CheckPoint(point,i,j))
+                    if(CheckPoint(point,i,j) && (i+j)%2!=0)
                     {
                         if(map[point.y+j][point.x+i] == -2)
                         {
@@ -259,10 +257,8 @@ public class Circuit {
                             return true;
                         }
                         if(map[point.y+j][point.x+i] == 0) {
-                            map[point.y + j][point.x + i] = counter + 1;
                             Point tmp = new Point(point.x + i, point.y + j);
                             points.add(new Pair<Point, Integer>(tmp, counter + 1));
-                            System.out.println(point.x + i + " " + point.y + j);
                         }
                     }
                 }
@@ -273,7 +269,7 @@ public class Circuit {
 
     private boolean CheckPoint(Point p, int iOfffset, int jOffset)
     {
-        return (iOfffset !=0 && jOffset !=0
+        return (!(iOfffset ==0 && jOffset ==0)
                 && p.x+iOfffset >=0 && p.x + iOfffset < length
                 && p.y+jOffset >=0 && p.y + jOffset < width);
     }
@@ -281,20 +277,31 @@ public class Circuit {
 
     private void DrawWire(Layout layout,int[][] map, Point wireEnd)
     {
+        /*for (int i = 0; i < map.length; i++) {
+
+            int[] arr2 = map[i];
+            for (int k = 0; k < arr2.length; k++) {
+                System.out.print(arr2[k] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println("=================");*/
         int counter = map[wireEnd.y][wireEnd.x];
         Point current = wireEnd;
         while(counter > 0)
         {
             layout.points[current.y][current.x] = PointType.Wire;
-            for(int ii = -1; ii < 2; ii++) {
-                for (int jj = -1; jj < 2; jj++) {
-                    if (CheckPoint(current,ii,jj) && map[current.y + jj][current.x + ii] < counter
+            boolean isFound = false;
+            for(int ii = -1; ii < 2 && !isFound; ii++) {
+                for (int jj = -1; jj < 2&& !isFound; jj++) {
+                    if (CheckPoint(current,ii,jj) && map[current.y + jj][current.x + ii] == counter - 1&& (ii+jj)%2!=0
                     ) {
                         if(layout.points[current.y + jj][current.x + ii] != PointType.None)
                             return;
                         current.x +=  ii;
                         current.y += jj;
                         counter--;
+                        isFound = true;
                     }
                 }
             }

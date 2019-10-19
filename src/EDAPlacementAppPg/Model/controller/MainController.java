@@ -37,8 +37,21 @@ public class MainController {
 //    }
 //    };
         //TODO: change sample to EDAPlacementApp.circuit();sample
+        int[][][] array = EDAPlacementApp.circuit();
+        for (int i = 0; i < array.length; i++) {
+            int[][] arr1 = array[i];
+            for (int j = 0; j < arr1.length; j++) {
+                int[] arr2 = arr1[j];
+                for (int k = 0; k < arr2.length; k++) {
+                    System.out.print(arr2[k] + " ");
+                }
+                System.out.println();
+            }
+            System.out.println("--------------------------------------------------");
+        }
+        
         String result = gson.toJson(EDAPlacementApp.circuit());
-        System.out.println(result);
+//        System.out.println(result);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Access-Control-Allow-Origin", "*");
         return ResponseEntity.ok().headers(responseHeaders).body(result);
