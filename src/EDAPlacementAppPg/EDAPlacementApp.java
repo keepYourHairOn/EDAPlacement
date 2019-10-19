@@ -1,15 +1,18 @@
 package EDAPlacementAppPg;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-
 import EDAPlacementAppPg.Model.Circuit;
 import EDAPlacementAppPg.Model.MyGraph;
+import EDAPlacementAppPg.Model.Parser;
 import javafx.util.Pair;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 @SpringBootApplication(scanBasePackages = "EDAPlacementAppPg.Model.controller")
 @EnableWebMvc
@@ -17,7 +20,7 @@ public class EDAPlacementApp {
     public static MyGraph<String> graph;
 
     public static void main(String[] args) throws Exception {
-        graph = parseFromFile(Paths.get(Paths.get("").toAbsolutePath() + "/src/input.txt"));
+        graph = Parser.parseFromFile(Paths.get(Paths.get("").toAbsolutePath() + "/src/input.txt"));
         SpringApplication.run(EDAPlacementApp.class, args);
     }
 
@@ -25,55 +28,6 @@ public class EDAPlacementApp {
         return BuildCircuit(graph);
     }
 
-    public static MyGraph<String> parseFromFile(Path path) throws Exception {
-        Scanner sc = new Scanner(path);
-        List<String> vert = new ArrayList<String>();
-        List<String> ops = new ArrayList<String>();
-        String line;
-        HashMap<String, String> vertInp = new HashMap<String, String>();
-        while (sc.hasNextLine()) {
-            line = sc.nextLine().toLowerCase();
-            String[] el = line.split(" ");
-            switch (el[0]) {
-                case "in":
-                case "out":
-                    vert.add(el[1]);
-                    vertInp.put(el[1], el[1]);
-                    break;
-                default:
-                    String el0 = el[0] + "|" + UUID.randomUUID().toString();
-                    vert.add(el0);
-                    String result = line.replace(el[0], el0);
-                    ops.add(result);
-                    break;
-            }
-        }
-        sc.close();
-
-        MyGraph<String> graph = new MyGraph<String>(vert.toArray(new String[vert.size()]), true);
-        for (String op : ops) {
-            String[] el = op.split(" ");
-            switch (el[0].split("\\|")[0]) {
-                case "and":
-                case "or":
-                case "nand":
-                case "nor":
-                case "xor":
-                case "xnor":
-                    graph.insertVertex(el[0]);
-                    vertInp.put(el[3], el[0]);
-                    graph.insertEdge(vertInp.get(el[1]), el[0], 0);
-                    graph.insertEdge(vertInp.get(el[2]), el[0], 0);
-                    break;
-                case "not":
-                    graph.insertVertex(el[0]);
-                    vertInp.put(el[0], el[1]);
-                    graph.insertEdge(vertInp.get(el[1]), el[0], 0);
-                    break;
-            }
-        }
-        return graph;
-    }
 
     public static int[][][] BuildCircuit(MyGraph<String> graph) {
         Circuit circuit = new Circuit();

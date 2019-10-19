@@ -1,3 +1,5 @@
 .idea/
 ASICdrawer/node_modules/
 ASICdrawer/.idea/
+target/
+.idea/
