@@ -24,7 +24,7 @@ public class Parser {
                 case "not":
                     el0 = el[0] + "|" + UUID.randomUUID().toString();
                     vert.add(el0);
-                    vertInp.put(el[0], el0);
+                    vertInp.put(el[2], el0);
                     result = line.replace(el[0], el0);
                     ops.add(result);
                     break;
@@ -56,6 +56,7 @@ public class Parser {
                 case "not":
                     graph.insertVertex(el[0]);
                     graph.insertEdge(vertInp.get(el[1]), el[0], 0);
+                    graph.insertEdge(el[0], el[2], 0);
                     break;
             }
         }

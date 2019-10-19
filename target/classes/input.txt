@@ -4,5 +4,4 @@ in 4
 out 6
 and 1 2 3
 or 3 4 5
-and 3 5 7
-not 7 6
+not 5 6
