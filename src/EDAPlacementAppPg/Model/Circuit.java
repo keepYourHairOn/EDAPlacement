@@ -176,7 +176,7 @@ public class Circuit {
         for (Element element: outputs) {
             DrawElement(pos,width - 5, element.elementType);
             element.x = pos;
-            element.y = 8;
+            element.y = width - 5;
             pos += 8;
         }
     }
