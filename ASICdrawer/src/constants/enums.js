@@ -9,9 +9,9 @@ export const cellTypeCodes = {
 };
 
 export const layerColor = {
-    0: "#845EC2",
-    1: "#D65DB1",
-    2: "#FF6F91",
+    0: "#ff1a35",
+    1: "#0000ff",
+    2: "#008000",
     3: "#FF9671",
     4: "#FFC75F",
     5: "#F9F871",
